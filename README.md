@@ -9,5 +9,5 @@ deterministic stream of income from aligned and coordinated donors.
 ## Important note: 
 This is very much work in progress and not a final product
 ### TODO:
-*Debug AI_timelines
-*Add future stream of incomes to AI timelines
+* Debug AI_timelines
+* Add future stream of incomes to AI timelines
