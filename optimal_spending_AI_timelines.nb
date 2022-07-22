@@ -1,0 +1,99 @@
+In[15]:= SetDirectory[NotebookDirectory[]];
+Get["functions.m"]
+Needs["ProbaAI`"];
+In[18]:= $ContextPath
+Out[18]= {ProbaAI`,DocumentationSearch`,ResourceLocator`,System`,Global`}
+In[19]:= (*User inputs:*)
+
+(*End time of hinginess*)
+tF=80;
+
+(*Proba of AI by time tF*)
+pF=0.95;
+\[Delta]F=0.001;
+
+(*AI timelines:probabity of AI by time t[i]*)
+time={0,10,20,50,tF};
+pAI={0,0.1,0.5,0.7,pF};
+In[24]:= \[Delta]H =  \[Delta]Hazard[\[Tau],time, pAI, \[Delta]F];
+\[Delta]H
+Out[25]= \[Piecewise]	0.0105361	0<=\[Tau]<=10
+0.0587787	10<=\[Tau]<=20
+0.0170275	20<=\[Tau]<=50
+0.0597253	50<=\[Tau]<=80
+0.001	True
+
+
+In[26]:= pNoAI =  probaNoAI[t,time, pAI, \[Delta]F];
+pNoAI
+Out[27]= E^-(\[Piecewise]	0.	t<=0
+2.91573 +0.001 t	t>80.
+0.352597 +0.0170275 t	20.<t<=50.
+-0.482426+0.0587787 t	10.<t<=20.
+-1.78229+0.0597253 t	50.<t<=80.
+0.0105361 t	True
+
+)
+In[28]:= (*Plot probability of no AI over the next 100 years given timelines*)
+Plot[pNoAI, {t,0,100},PlotRange->{{0,100},{0,1}}, Frame->True, FrameLabel->{"Time (year)", "Probability of no AI"} ,LabelStyle->{FontSize->18,FontFamily->"Times", ,Black,Bold}, PlotStyle->{Blue,Thick}]
+Out[28]= 
+H = \[Delta]*p*x^\[Eta]+zM* (r * m  -x);
+p = 1/(1+t);
+\[Delta] = -D[p,t]/p;
+In[267]:= $Assumptions ={\[Eta]>0,\[Eta]<1};
+xStar = SolveValues[D[H,x] ==0 ,x];
+xStar = xStar[[1]]
+During evaluation of In[267]:= SolveValues::ifun: Inverse functions are being used by SolveValues, so some solutions may not be found; use Reduce for complete solution information.
+Out[269]= ((1+t)^2 zM)^(1/(-1+\[Eta])) \[Eta]^(-(1/(-1+\[Eta])))
+
+In[270]:= xStar = SolveValues[D[H,x] ==0 ,x];
+xStar = xStar[[1]];
+mDot[t_] = r*m[t]-(xStar/.v->v[t] );
+vDot[t_]= -D[H,m];
+vDot[t]
+During evaluation of In[270]:= SolveValues::ifun: Inverse functions are being used by SolveValues, so some solutions may not be found; use Reduce for complete solution information.
+In[294]:= mDot[t]
+Out[294]= -((1+t)^2 zM)^((1/(-1+\[Eta]))) \[Eta]^(-(1/(-1+\[Eta])))+r m[t]
+In[275]:= equadiff = {m'[t]==(mDot[t]/.zM->zM[t]),zM'[t]==(vDot[t]/.zM->zM[t])}
+Out[275]= {(m^\[Prime])[t]==r m[t]-\[Eta]^(-(1/(-1+\[Eta]))) ((1+t)^2 zM[t])^(1/(-1+\[Eta])),(zM^\[Prime])[t]==-r zM[t]}
+In[289]:= parameters={ r->0.05,B->100,\[Eta]->2,timeEnd -> 100};
+initialC = {m[0]==B};
+terminalC = {m[timeEnd]==0};
+dependants = {m[t],zM[t]};
+solution = NDSolve[
+Join[equadiff, initialC, terminalC]//.parameters,dependants,{t,0,100}]
+Out[293]= {{m[t]->InterpolatingFunction[Domain: {{0.,100.}}
+Output: scalar
+
+][t],zM[t]->InterpolatingFunction[Domain: {{0.,100.}}
+Output: scalar
+
+][t]}}
+In[283]:= mStar = m/.m->solution[[1]][[1]];
+Plot[mStar,{t,0,100}]
+In[287]:= mStar = InterpolatingFunction[Domain: {{0.,100.}}
+Output: scalar
+
+][t]
+Out[287]= InterpolatingFunction[Domain: {{0.,100.}}
+Output: scalar
+
+][t]
+In[288]:= Plot[mStar,{t,0,100}]
+Out[288]= 
+In[258]:= solution = NDSolve[{m'[t]==(mDot[t]/.zM->1),m[0]==1}//.parameters,m[t],{t,0,100}, Method->{"PDEDiscretization"->"FiniteElement"}]
+Out[258]= NDSolve[{(m^\[Prime])[t]==0.05 m[t]-E^\[Piecewise]	0.	t<=0
+2.91573 +0.001 t	t>80.
+0.352597 +0.0170275 t	20.<t<=50.
+-0.482426+0.0587787 t	10.<t<=20.
+-1.78229+0.0597253 t	50.<t<=80.
+0.0105361 t	True
+
+/(2 (\[Piecewise]	0.0105361	0<=\[Tau]<=10
+0.0587787	10<=\[Tau]<=20
+0.0170275	20<=\[Tau]<=50
+0.0597253	50<=\[Tau]<=80
+0.001	True
+
+)),m[0]==1},m[t],{t,0,100},Method->{PDEDiscretization->FiniteElement}]
+

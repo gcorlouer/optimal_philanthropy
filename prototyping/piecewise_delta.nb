@@ -1,0 +1,19 @@
+In[1]:=
+SetDirectory[NotebookDirectory[]];
+Get["dummy_package.m"]
+
+
+Needs["DeltaConstant`"]
+time = {10,20,50};
+\[Delta]F = 0.001;
+\[Delta] = DeltaCoeff[time,\[Delta]F];
+\[Delta][1]
+Out[9]= DeltaConstant`Private`a[1]
+In[42]:= $ContextPath
+Out[42]= {SimpleArithmetic`,DeltaConstant`,DocumentationSearch`,ResourceLocator`,System`,Global`}
+In[39]:= Needs["SimpleArithmetic`"]
+
+In[5]:= Needs["HazardFun`"]
+In[10]:= deltaP = HazardCoeff[time,\[Delta]F];
+ deltaP[2]
+Out[11]= HazardFun`Private`\[Delta][2]
